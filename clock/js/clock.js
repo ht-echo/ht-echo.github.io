@@ -1,1 +1,65 @@
-"use strict";fetch("https://wttr.in/"+returnCitySN.cip+'?format="%l+\\+%c+\\+%t+\\+%h"').then(function(c){return c.text()}).then(function(c){var e,l,n,t,r;document.getElementById("hexo_electric_clock")&&(e=function(){var c,e,n,t=new Date,a=l(t.getHours(),2)+":"+l(t.getMinutes(),2)+":"+l(t.getSeconds(),2),o=l(t.getFullYear(),4)+"-"+l(t.getMonth()+1,2)+"-"+l(t.getDate(),2)+" "+r[t.getDay()],t=t.getHours(),t=12<t?" PM":" AM";document.getElementById("card-clock-time")&&(c=document.getElementById("card-clock-time"),e=document.getElementById("card-clock-clockdate"),n=document.getElementById("card-clock-dackorlight"),c.innerHTML=a,e.innerHTML=o,n.innerHTML=t)},l=function(c,e){for(var n="",t=0;t<e;t++)n+="0";return(n+c).slice(-e)},c=c.replace(/not found/g,"not found,not found").replace(/"/g,"").replace(/\+/g,"").replace(/,/g,"\\").replace(/ /g,"").replace(/°C/g,"").split("\\"),n=document.getElementById("hexo_electric_clock"),t='  \n        <div class="clock-row">\n        <span id="card-clock-clockdate" class="card-clock-clockdate"></span>\n        <span class="card-clock-weather">'.concat(c[2]," ").concat(c[3],' *C</span>\n        <span class="card-clock-humidity">💧 ').concat(c[4],'</span>\n        </div>\n        <div class="clock-row"><span id="card-clock-time" class="card-clock-time"></span></div>\n        \n        <div class="clock-row">\n        <span class="card-clock-ip">').concat(returnCitySN.cip,'</span>\n        <span class="card-clock-location">').concat(c[0],'</span>\n        <span id="card-clock-dackorlight" class="card-clock-dackorlight"></span>\n        </div>\n        '),r=["SUN","MON","TUE","WED","THU","FRI","SAT"],document.getElementById("card-clock-loading").innerHTML="",n.innerHTML=t,setInterval(e,1e3),e(),console.log(c))});
+
+fetch('https://wttr.in/'+returnCitySN["cip"]+'?format="%l+\\+%c+\\+%t+\\+%h"').then(res=>res.text()).then(
+    data => {
+       if(document.getElementById('hexo_electric_clock')){
+        var res_text = data.replace(/not found/g,'not found,not found').replace(/"/g,'').replace(/\+/g,'').replace(/,/g,'\\').replace(/ /g,'').replace(/°C/g,'');
+       var res_list = res_text.split('\\');
+        var clock_box = document.getElementById('hexo_electric_clock');
+       var clock_box_html = `  
+        <div class="clock-row">
+        <span id="card-clock-clockdate" class="card-clock-clockdate"></span>
+        <span class="card-clock-weather">${res_list[2]} ${res_list[3]} *C</span>
+        <span class="card-clock-humidity">💧 ${res_list[4]}</span>
+        </div>
+        <div class="clock-row"><span id="card-clock-time" class="card-clock-time"></span></div>
+        
+        <div class="clock-row">
+        <span class="card-clock-ip">${returnCitySN["cip"]}</span>
+        <span class="card-clock-location">${res_list[0]}</span>
+        <span id="card-clock-dackorlight" class="card-clock-dackorlight"></span>
+        </div>
+        `;
+        var week = ['SUN', 'MON', 'TUE', 'WED','THU' ,'FRI', 'SAT'];
+        var card_clock_loading_dom = document.getElementById('card-clock-loading');
+        card_clock_loading_dom.innerHTML='';
+        clock_box.innerHTML= clock_box_html;
+        function updateTime() {
+            var cd = new Date();
+            var card_clock_time = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2);
+            var card_clock_date = zeroPadding(cd.getFullYear(), 4) + '-' + zeroPadding(cd.getMonth()+1, 2) + '-' + zeroPadding(cd.getDate(), 2) + ' '+ week[cd.getDay()];
+            var card_clock_dackorlight = cd.getHours();
+            var card_clock_dackorlight_str;
+            if(card_clock_dackorlight >12) {
+                card_clock_dackorlight -= 12;
+                card_clock_dackorlight_str = " PM";
+            }else{
+                card_clock_dackorlight_str = " AM";
+            }
+            if(document.getElementById('card-clock-time')){
+            var card_clock_time_dom = document.getElementById('card-clock-time');
+            var card_clock_date_dom = document.getElementById('card-clock-clockdate');
+            var card_clock_dackorlight_dom = document.getElementById('card-clock-dackorlight');
+            card_clock_time_dom.innerHTML= card_clock_time;
+            card_clock_date_dom.innerHTML= card_clock_date;
+            card_clock_dackorlight_dom.innerHTML= card_clock_dackorlight_str
+                }
+        }
+
+        function zeroPadding(num, digit) {
+            var zero = '';
+            for(var i = 0; i < digit; i++) {
+                zero += '0';
+            }
+            return (zero + num).slice(-digit);
+        }
+        
+        
+           var timerID = setInterval(updateTime, 1000);
+           updateTime();
+           
+       
+
+        console.log(res_list)
+       }
+    }
+)

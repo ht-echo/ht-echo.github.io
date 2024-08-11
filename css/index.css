@@ -5381,11 +5381,13 @@ div#swiper_container {
 @media screen and (min-width: 600px) {
   .blog-slider {
     display:inline-block;
-    height: 180px;
+    height: 170px;
+    width: 100%;
   }
   .blog-slider__img {
     display:inline-block;
-    height: 180px;
+    height: 170px;
+    width: 100%;
   }
 }
 #vcomment,
